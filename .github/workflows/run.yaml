@@ -1,0 +1,37 @@
+name: Manual Trigger with URLs and Mode
+
+on:
+  workflow_dispatch:
+    inputs:
+      url:
+        description: 'URL(s) to process (comma-separated)'
+        required: true
+        type: string
+      mode:
+        description: 'Execution mode'
+        required: true
+        type: choice
+        options: [dev, prod, test]
+        default: dev
+
+jobs:
+  run-script:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Tailscale
+        uses: tailscale/github-action@v3
+        with:
+          tags: tag:ci
+          authkey: ${{secrets.TS_KEY}}
+          args: ${{env.TS_ADD_ARGS}}
+          hostname: github-ci-${{env.__platform}}-${{env.__arch}}
+      - uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+
+      - run: npm i
+
+      - run: npm start
