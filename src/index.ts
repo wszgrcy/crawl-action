@@ -32,7 +32,7 @@ export async function main() {
       try {
         console.log(API_KEY);
         console.log(API_KEY!.length);
-        
+
         const response = await fetch(url, {
           method: 'POST',
           headers: {
@@ -50,8 +50,8 @@ export async function main() {
             const errText = await response.text();
             errorDetail = errText ? `\nBody: ${errText}` : '';
           } catch (_) {}
-
-          throw new Error(`Request failed with status ${response.status}${errorDetail}`);
+          console.error(`Request failed with status ${response.status}${errorDetail}`);
+          process.exit(101);
         }
 
         const result = await response.json();
