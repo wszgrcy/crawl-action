@@ -26,8 +26,7 @@ jobs:
           args: ${{vars.TS_ADD_ARGS}}
           hostname: github-ci-crawl
           ping: lan-server.chloc
-        env:
-          API_KEY: ${{ secrets.API_KEY }}
+
       - uses: actions/checkout@v6
 
       - name: Setup Node.js
@@ -38,3 +37,5 @@ jobs:
       - run: npm i
 
       - run: npm start
+        env:
+          API_KEY: ${{ secrets.API_KEY }}
