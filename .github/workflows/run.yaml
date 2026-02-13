@@ -7,12 +7,7 @@ on:
         description: 'URL(s) to process (comma-separated)'
         required: true
         type: string
-      mode:
-        description: 'Execution mode'
-        required: true
-        type: choice
-        options: [dev, prod, test]
-        default: dev
+
 
 jobs:
   run-script:
@@ -39,3 +34,4 @@ jobs:
       - run: npm start
         env:
           API_KEY: ${{ secrets.API_KEY }}
+          URL: ${{github.event.inputs.url}}

@@ -5,7 +5,7 @@ if (!API_KEY) {
   throw new Error('没有读取到apikey');
 }
 export async function main() {
-  const urlList = core.getMultilineInput('url', { required: true });
+  const urlList = process.env['URL']!.split(/\n|\r\n|,/)
   console.log('url', urlList);
 
   //   const mode = core.getInput('mode', { required: true });
