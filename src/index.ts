@@ -5,7 +5,7 @@ if (!API_KEY) {
   throw new Error('没有读取到apikey');
 }
 export async function main() {
-  const urlList = process.env['URL']!.split(/\n|\r\n|,/)
+  const urlList = process.env['URL']!.split(/\n|\r\n|,/);
   console.log('url', urlList);
 
   //   const mode = core.getInput('mode', { required: true });
@@ -58,9 +58,8 @@ export async function main() {
         console.log(error);
       }
     });
-    await instance.start();
+    await instance.start({ args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage', '--disable-gpu'] } as any);
     console.log('运行完成');
-    
   }
 }
 main();
