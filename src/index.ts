@@ -15,7 +15,7 @@ export async function main() {
     let instance = new FullWebRequest({
       rootUrl: item,
       filterLink: async (url) => {
-        return new URL(url).origin === rootUrl.origin;
+        return url.startsWith(item);
       },
       queueList: async (url) => {
         return [
