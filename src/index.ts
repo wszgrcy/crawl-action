@@ -30,11 +30,13 @@ export async function main() {
       const url = `${BASE_URL}/open/docVector/convertUrlDoc`;
 
       try {
+        console.log(API_KEY);
+        
         const response = await fetch(url, {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${API_KEY}`,
+            'content-Type': 'application/json',
+            authorization: `Bearer ${API_KEY}`,
           },
           body: JSON.stringify({
             data: data || {},
