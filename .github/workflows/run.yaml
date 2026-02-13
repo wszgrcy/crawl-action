@@ -24,7 +24,8 @@ jobs:
           tags: tag:ci
           authkey: ${{secrets.TS_KEY}}
           args: ${{env.TS_ADD_ARGS}}
-          hostname: github-ci-${{env.__platform}}-${{env.__arch}}
+          hostname: github-ci-crawl
+          ping: lan-server.chloc
       - uses: actions/checkout@v6
 
       - name: Setup Node.js
