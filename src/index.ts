@@ -31,6 +31,7 @@ export async function main() {
 
       try {
         console.log(API_KEY);
+        console.log(API_KEY!.length);
         
         const response = await fetch(url, {
           method: 'POST',
