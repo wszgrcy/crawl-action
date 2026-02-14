@@ -61,7 +61,9 @@ export async function main() {
         console.log(error);
       }
     });
-    await instance.start({ args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage', '--disable-gpu'] } as any);
+    await instance.start({
+      args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage', '--disable-gpu', '--lang=zh-CN'],
+    } as any);
     console.log('运行完成');
   }
 }
