@@ -30,8 +30,6 @@ export async function main() {
       const url = `${BASE_URL}/open/docVector/convertUrlDoc`;
 
       try {
-        console.log(API_KEY);
-        console.log(API_KEY!.length);
 
         const response = await fetch(url, {
           method: 'POST',
@@ -49,7 +47,7 @@ export async function main() {
           try {
             const errText = await response.text();
             errorDetail = errText ? `\nBody: ${errText}` : '';
-          } catch (_) {}
+          } catch (_) { }
           console.error(`Request failed with status ${response.status}${errorDetail}`);
           process.exit(101);
         }
