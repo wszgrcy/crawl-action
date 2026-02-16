@@ -15,6 +15,8 @@ export async function main() {
     let instance = new FullWebRequest({
       rootUrl: item,
       filterLink: async (url) => {
+        console.log('比较',url,item,url.startsWith(item));
+        
         return url.startsWith(item);
       },
       queueList: async (url) => {
