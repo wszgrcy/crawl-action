@@ -15,8 +15,6 @@ export async function main() {
     let instance = new FullWebRequest({
       rootUrl: item,
       filterLink: async (url) => {
-        console.log('比较',url,item,url.startsWith(item));
-        
         return url.startsWith(item);
       },
       queueList: async (url) => {
@@ -32,7 +30,6 @@ export async function main() {
       const url = `${BASE_URL}/open/docVector/convertUrlDoc`;
 
       try {
-
         const response = await fetch(url, {
           method: 'POST',
           headers: {
@@ -49,7 +46,7 @@ export async function main() {
           try {
             const errText = await response.text();
             errorDetail = errText ? `\nBody: ${errText}` : '';
-          } catch (_) { }
+          } catch (_) {}
           console.error(`Request failed with status ${response.status}${errorDetail}`);
           process.exit(101);
         }
