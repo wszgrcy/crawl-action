@@ -21,6 +21,7 @@ export async function main() {
         return [
           { type: 'setViewport', width: 1920, height: 1080 },
           { type: 'goto', url: url, waitUntil: 'networkidle0' },
+          { type: 'wait', config: { mode: 'delay', value: 3000 } },
         ];
       },
     });
