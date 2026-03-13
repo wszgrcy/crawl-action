@@ -4,10 +4,14 @@ on:
   workflow_dispatch:
     inputs:
       url:
-        description: 'URL(s) to process (comma-separated)'
+        description: 'url逗号分隔'
         required: true
         type: string
-
+      tags:
+        description: '标签逗号分隔'
+        required: true
+        type: string
+        default: ''
 
 jobs:
   run-script:
@@ -34,4 +38,5 @@ jobs:
       - run: npm start
         env:
           API_KEY: ${{ secrets.API_KEY }}
-          URL: ${{github.event.inputs.url}}
+          INPUT_URL: ${{github.event.inputs.url}}
+          INPUT_TAGS: ${{github.event.inputs.tags}}

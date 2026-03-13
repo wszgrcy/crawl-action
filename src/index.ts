@@ -5,7 +5,8 @@ if (!API_KEY) {
   throw new Error('没有读取到apikey');
 }
 export async function main() {
-  const urlList = process.env['URL']!.split(/\n|\r\n|,/);
+  const urlList = process.env['INPUT_URL']!.split(/\n|\r\n|,/);
+  let tags = process.env['INPUT_TAGS']!.split(/\n|\r\n|,/);
   console.log('url', urlList);
 
   //   const mode = core.getInput('mode', { required: true });
@@ -21,7 +22,7 @@ export async function main() {
         return [
           { type: 'setViewport', width: 1920, height: 1080 },
           { type: 'goto', url: url, waitUntil: 'networkidle0' },
-          { type: 'wait', config: { mode: 'delay', value: 3000 } },
+          { type: 'wait', config: { mode: 'delay', value: 2000 } },
         ];
       },
     });
@@ -39,6 +40,7 @@ export async function main() {
           },
           body: JSON.stringify({
             data: data || {},
+            tags: tags,
           }),
         });
 
