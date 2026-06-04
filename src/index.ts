@@ -6,6 +6,7 @@ import path from 'path';
 import { tmpdir } from 'os';
 import { ZipService } from '@cyia/zip';
 import sanitize from 'sanitize-filename';
+import { v4 } from 'uuid';
 
 export async function main() {
   const urlList = process.env['INPUT_URL']!.split(/\n|\r\n|,/);
@@ -41,14 +42,14 @@ export async function main() {
     } as any);
     let data = buildMarkdownMap(item, result);
     let list = [];
-    let dir = path.join(process.cwd(), '.doc-tmp', tmpdir());
+    let dir = path.join(process.cwd(), '.doc-tmp', v4());
     for (const [key, value] of data.entries()) {
       let fp = path.join(dir, key);
       let fdir = path.dirname(fp);
       list.push(
         (() => {
           return fs.mkdir(fdir, { recursive: true }).then(() => {
-            return fs.writeFile(fp, value);
+            return fs.writeFile(fp === fdir ? path.join(fp, 'index.md') : fp, value);
           });
         })(),
       );
