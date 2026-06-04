@@ -10,14 +10,22 @@ import sanitize from 'sanitize-filename';
 export async function main() {
   const urlList = process.env['INPUT_URL']!.split(/\n|\r\n|,/);
   let tags = process.env['INPUT_TAGS']!.split(/\n|\r\n|,/);
+  let skipQueryParams = process.env['skipQueryParams'];
+  console.log('skipQueryParams', skipQueryParams);
   console.log('url', urlList);
   let injector = createRootInjector({ providers: [ZipService] });
   let zip = injector.get(ZipService);
-  for (const item of urlList) {
+  for (let index = 0; index < urlList.length; index++) {
+    const item = urlList[index];
+
     let rootUrl = new URL(item);
     let instance = new FullWebRequest({
       rootUrl: item,
       filterLink: async (url) => {
+        let url2 = new URL(item);
+        if (skipQueryParams && url2.search) {
+          return false;
+        }
         return url.startsWith(item);
       },
       queueList: async (url) => {
@@ -39,7 +47,7 @@ export async function main() {
       list.push(fs.writeFile(path.join(dir, key), value));
     }
     await Promise.all(list);
-    const outputPath = path.join(process.cwd(), 'output', sanitize(item.replace(/^https?:\/\//, ''), { replacement: '_' }));
+    const outputPath = path.join(process.cwd(), 'output', sanitize(tags[index] || item.replace(/^https?:\/\//, ''), { replacement: '_' }));
     await zip.zip(dir, outputPath);
     console.log(`拉取`, item, '完成');
     // 压缩完成后,读取下output,然后打印一下里面的文件名

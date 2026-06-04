@@ -8,10 +8,15 @@ on:
         required: true
         type: string
       tags:
-        description: '标签逗号分隔'
-        required: true
+        description: '保存为'
+        required: false
         type: string
         default: ''
+      skipQueryParams:
+        description: '跳过查询参数'
+        required: false
+        type: boolean
+        default: true
 
 jobs:
   run-script:
@@ -39,6 +44,7 @@ jobs:
         env:
           INPUT_URL: ${{github.event.inputs.url}}
           INPUT_TAGS: ${{github.event.inputs.tags}}
+          skipQueryParams: ${{github.event.inputs.skipQueryParams}}
       - name: 上传文档
         uses: wszgrcy/upload-s3-action@2.0.7
         with:
