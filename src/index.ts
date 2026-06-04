@@ -59,7 +59,7 @@ export async function main() {
     await Promise.all(list);
     await fs.mkdir(path.join(process.cwd(), 'output'));
     const outputPath = path.join(process.cwd(), 'output', sanitize(tags[index] || item.replace(/^https?:\/\//, ''), { replacement: '_' }));
-    await zip.zip(dir, outputPath);
+    await zip.zip(dir, outputPath + '.zip', { compress: true, compressionLevel: 9 });
     console.log(`拉取`, item, '完成');
     // 压缩完成后,读取下output,然后打印一下里面的文件名
     const outputDir = path.dirname(outputPath);
