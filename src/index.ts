@@ -21,7 +21,6 @@ export async function main() {
     let instance = new FullWebRequest({
       rootUrl: item,
       filterLink: async (url) => {
-        console.log(url);
         let url2 = new URL(url);
         if (skipQueryParams && url2.search) {
           return false;
