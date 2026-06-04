@@ -10,8 +10,7 @@ import sanitize from 'sanitize-filename';
 export async function main() {
   const urlList = process.env['INPUT_URL']!.split(/\n|\r\n|,/);
   let tags = process.env['INPUT_TAGS']!.split(/\n|\r\n|,/);
-  let skipQueryParams = process.env['skipQueryParams'];
-  console.log('skipQueryParams', skipQueryParams, typeof skipQueryParams);
+  let skipQueryParams = process.env['skipQueryParams'] === 'true';
   console.log('url', urlList);
   let injector = createRootInjector({ providers: [ZipService] });
   let zip = injector.get(ZipService);
