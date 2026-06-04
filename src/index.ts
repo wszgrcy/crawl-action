@@ -46,13 +46,14 @@ export async function main() {
     for (const [key, value] of data.entries()) {
       let fp = path.normalize(path.join(dir, key));
       let fdir = path.dirname(fp);
+
       list.push(
         (() => {
-          console.log('mkdir',fdir)
+          // console.log('mkdir', fdir);
           return fs.mkdir(fdir, { recursive: true }).then(() => {
             console.log(fp, fdir);
             console.log(path.normalize(fp), path.normalize(fdir));
-            return fs.writeFile(fp === fdir ? path.join(fp, 'index.md') : fp, value);
+            return fs.writeFile(fp === fdir || fp.endsWith('/') ? path.join(fp, 'index.md') : fp, value);
           });
         })(),
       );
