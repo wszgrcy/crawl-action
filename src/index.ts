@@ -45,15 +45,13 @@ export async function main() {
     let dir = path.join(process.cwd(), '.doc-tmp', v4());
     for (const [key, value] of data.entries()) {
       let fp = path.normalize(path.join(dir, key));
+      fp = fp.endsWith('/') ? path.join(fp, 'index.md') : fp;
       let fdir = path.dirname(fp);
 
       list.push(
         (() => {
-          // console.log('mkdir', fdir);
           return fs.mkdir(fdir, { recursive: true }).then(() => {
-            console.log(fp, fdir);
-            console.log(path.normalize(fp), path.normalize(fdir));
-            return fs.writeFile(fp === fdir || fp.endsWith('/') ? path.join(fp, 'index.md') : fp, value);
+            return fs.writeFile(fp, value);
           });
         })(),
       );
