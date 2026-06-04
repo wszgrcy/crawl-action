@@ -43,9 +43,18 @@ export async function main() {
     let list = [];
     let dir = path.join(process.cwd(), '.doc-tmp', tmpdir());
     for (const [key, value] of data.entries()) {
-      list.push(fs.writeFile(path.join(dir, key), value));
+      let fp = path.join(dir, key);
+      let fdir = path.dirname(fp);
+      list.push(
+        (() => {
+          return fs.mkdir(fdir, { recursive: true }).then(() => {
+            return fs.writeFile(fp, value);
+          });
+        })(),
+      );
     }
     await Promise.all(list);
+    await fs.mkdir(path.join(process.cwd(), 'output'));
     const outputPath = path.join(process.cwd(), 'output', sanitize(tags[index] || item.replace(/^https?:\/\//, ''), { replacement: '_' }));
     await zip.zip(dir, outputPath);
     console.log(`拉取`, item, '完成');
