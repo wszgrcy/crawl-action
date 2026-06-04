@@ -37,6 +37,15 @@ jobs:
 
       - run: npm start
         env:
-          API_KEY: ${{ secrets.API_KEY }}
           INPUT_URL: ${{github.event.inputs.url}}
           INPUT_TAGS: ${{github.event.inputs.tags}}
+      - name: 上传文档
+        uses: wszgrcy/upload-s3-action@2.0.7
+        with:
+          mode: upload
+          aws_key_id: ${{secrets.S3_ID}}
+          aws_secret_access_key: ${{secrets.S3_KEY}}
+          endpoint: ${{secrets.S3_ENDPOINT}}
+          aws_bucket: "shenghuabi-repo"
+          source_dir: './output'
+          destination_dir: "./"

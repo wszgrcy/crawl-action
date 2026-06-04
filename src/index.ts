@@ -1,16 +1,18 @@
 import * as core from '@actions/core';
-import { FullWebRequest } from '@cyia/crawl';
-let API_KEY = process.env['API_KEY'];
-if (!API_KEY) {
-  throw new Error('没有读取到apikey');
-}
+import { buildMarkdownMap, FullWebRequest } from '@cyia/crawl';
+import { createRootInjector } from 'static-injector';
+import fs from 'fs/promises';
+import path from 'path';
+import { tmpdir } from 'os';
+import { ZipService } from '@cyia/zip';
+import sanitize from 'sanitize-filename';
+
 export async function main() {
   const urlList = process.env['INPUT_URL']!.split(/\n|\r\n|,/);
   let tags = process.env['INPUT_TAGS']!.split(/\n|\r\n|,/);
   console.log('url', urlList);
-
-  //   const mode = core.getInput('mode', { required: true });
-
+  let injector = createRootInjector({ providers: [ZipService] });
+  let zip = injector.get(ZipService);
   for (const item of urlList) {
     let rootUrl = new URL(item);
     let instance = new FullWebRequest({
@@ -26,45 +28,25 @@ export async function main() {
         ];
       },
     });
-    instance.data$.subscribe(async (data: any) => {
-      const BASE_URL = 'http://lan-server.chloc:4123';
 
-      const url = `${BASE_URL}/open/docVector/convertUrlDoc`;
-
-      try {
-        const response = await fetch(url, {
-          method: 'POST',
-          headers: {
-            'content-Type': 'application/json',
-            authorization: `Bearer ${API_KEY}`,
-          },
-          body: JSON.stringify({
-            data: data || {},
-            tags: tags,
-          }),
-        });
-
-        if (!response.ok) {
-          let errorDetail;
-          try {
-            const errText = await response.text();
-            errorDetail = errText ? `\nBody: ${errText}` : '';
-          } catch (_) {}
-          console.error(`Request failed with status ${response.status}${errorDetail}`);
-          process.exit(101);
-        }
-
-        const result = await response.json();
-        console.log('成功', url);
-        return result;
-      } catch (error) {
-        console.log(error);
-      }
-    });
-    await instance.start({
+    let result = await instance.start({
       args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage', '--disable-gpu', '--lang=zh-CN'],
     } as any);
-    console.log('运行完成');
+    let data = buildMarkdownMap(item, result);
+    let list = [];
+    let dir = path.join(process.cwd(), '.doc-tmp', tmpdir());
+    for (const [key, value] of data.entries()) {
+      list.push(fs.writeFile(path.join(dir, key), value));
+    }
+    await Promise.all(list);
+    const outputPath = path.join(process.cwd(), 'output', sanitize(item.replace(/^https?:\/\//, ''), { replacement: '_' }));
+    await zip.zip(dir, outputPath);
+    console.log(`拉取`, item, '完成');
+    // 压缩完成后,读取下output,然后打印一下里面的文件名
+    const outputDir = path.dirname(outputPath);
+    const files = await fs.readdir(outputDir);
+    console.log('output dir:', outputDir);
+    console.log('files:', files);
   }
 }
 main();
