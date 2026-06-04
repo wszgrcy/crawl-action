@@ -11,7 +11,7 @@ export async function main() {
   const urlList = process.env['INPUT_URL']!.split(/\n|\r\n|,/);
   let tags = process.env['INPUT_TAGS']!.split(/\n|\r\n|,/);
   let skipQueryParams = process.env['skipQueryParams'];
-  console.log('skipQueryParams', skipQueryParams);
+  console.log('skipQueryParams', skipQueryParams, typeof skipQueryParams);
   console.log('url', urlList);
   let injector = createRootInjector({ providers: [ZipService] });
   let zip = injector.get(ZipService);
@@ -22,6 +22,7 @@ export async function main() {
     let instance = new FullWebRequest({
       rootUrl: item,
       filterLink: async (url) => {
+        console.log(url);
         let url2 = new URL(url);
         if (skipQueryParams && url2.search) {
           return false;
