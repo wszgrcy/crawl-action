@@ -45,7 +45,7 @@ export async function main() {
     let dir = path.join(process.cwd(), '.doc-tmp', v4());
     for (const [key, value] of data.entries()) {
       let fp = path.normalize(path.join(dir, key));
-      fp = fp.endsWith('/') ? path.join(fp, 'index.md') : fp;
+      fp = fp.endsWith('/') ? path.join(fp, 'index.md') : fp + '.md';
       let fdir = path.dirname(fp);
 
       list.push(
